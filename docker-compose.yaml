@@ -1,0 +1,43 @@
+version: '3'
+services:
+  bird1:
+    build: bird
+    entrypoint: bird
+    command:
+      - -s
+      - /bird.sock 
+      - -c
+      - /etc/bird/bird1.conf
+      - -f
+      - -d
+    volumes:
+      - ./bird/config_local/:/etc/bird/
+    networks:
+      vpcbr:
+        ipv4_address: 10.1.0.2
+  bird2:
+    build: bird
+    entrypoint: bird
+    command:
+      - -s
+      - /bird.sock 
+      - -c
+      - /etc/bird/bird2.conf
+      - -f
+      - -d
+    volumes:
+      - ./bird/config_local/:/etc/bird/
+    networks:
+      vpcbr:
+        ipv4_address: 10.1.0.3
+  gortr:
+    image: cloudflare/gortr
+    networks:
+      vpcbr:
+        ipv4_address: 10.1.0.4
+networks:
+  vpcbr:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.1.0.0/16
