@@ -22,6 +22,8 @@ services:
       - -d
     volumes:
       - ./bird/config_local/:/etc/bird/
+      - ./bird/ssh/id_rsa:/id_rsa
+      - ./bird/ssh/id_rsa.pub:/id_rsa.pub
     depends_on:
       - gortr
     networks:
