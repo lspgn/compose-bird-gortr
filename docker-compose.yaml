@@ -1,5 +1,15 @@
 version: '3'
 services:
+  gortr:
+    image: cloudflare/gortr
+    command:
+      - -ssh.bind
+      - :8283
+      - -ssh.method.key=true
+      - -ssh.auth.key.bypass=true
+    networks:
+      vpcbr:
+        ipv4_address: 10.1.0.4
   bird1:
     build: bird
     entrypoint: bird
@@ -12,6 +22,8 @@ services:
       - -d
     volumes:
       - ./bird/config_local/:/etc/bird/
+    depends_on:
+      - gortr
     networks:
       vpcbr:
         ipv4_address: 10.1.0.2
@@ -27,14 +39,11 @@ services:
       - -d
     volumes:
       - ./bird/config_local/:/etc/bird/
+    depends_on:
+      - gortr
     networks:
       vpcbr:
         ipv4_address: 10.1.0.3
-  gortr:
-    image: cloudflare/gortr
-    networks:
-      vpcbr:
-        ipv4_address: 10.1.0.4
 networks:
   vpcbr:
     driver: bridge
